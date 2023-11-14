@@ -25,7 +25,7 @@ resource "google_compute_subnetwork" "subnet" {
 resource "google_container_cluster" "primary" {
   name                     = "my-gke-cluster"
   location                 = "europe-west3"
-   enable_autopilot = true
+  #enable_autopilot = true
   network                  = google_compute_network.vpc.name
   subnetwork               = google_compute_subnetwork.subnet.name
 #  remove_default_node_pool = true                ## create the smallest possible default node pool and immediately delete it.
@@ -49,7 +49,7 @@ resource "google_container_cluster" "primary" {
 
   }
 }
-/*
+
 # Create managed node pool
 resource "google_container_node_pool" "primary_nodes" {
   name       = google_container_cluster.primary.name
@@ -76,7 +76,7 @@ resource "google_container_node_pool" "primary_nodes" {
     }
   }
 }
-*/
+
 
 # Create jump host . We will allow this jump host to access GKE cluster. the ip of this jump host is already authorized to allowin the GKE cluster
 
