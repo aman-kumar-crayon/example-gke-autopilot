@@ -1,5 +1,3 @@
-variable "project_id" {}
-
 # create VPC
 resource "google_compute_network" "vpc" {
   name                    = "vpc1"
@@ -9,7 +7,7 @@ resource "google_compute_network" "vpc" {
 # Create Subnet
 resource "google_compute_subnetwork" "subnet" {
   name          = "subnet1"
-  region        = "europe-west3"
+  region        = "asia-south2"
   network       = google_compute_network.vpc.name
   ip_cidr_range = "10.0.0.0/24"
 }
@@ -24,8 +22,8 @@ resource "google_compute_subnetwork" "subnet" {
 # Create GKE cluster with 2 nodes in our custom VPC/Subnet
 resource "google_container_cluster" "primary" {
   name                     = "my-gke-cluster"
-  location                 = "europe-west3"
-  #enable_autopilot = true
+  location                 = "asia-south2"
+   enable_autopilot = true
   network                  = google_compute_network.vpc.name
   subnetwork               = google_compute_subnetwork.subnet.name
 #  remove_default_node_pool = true                ## create the smallest possible default node pool and immediately delete it.
@@ -40,7 +38,7 @@ resource "google_container_cluster" "primary" {
   ip_allocation_policy {
     cluster_ipv4_cidr_block  = "10.11.0.0/21"
     services_ipv4_cidr_block = "10.12.0.0/21"
- }
+  }
   master_authorized_networks_config {
     cidr_blocks {
       cidr_block   = "10.0.0.7/32"
@@ -49,11 +47,11 @@ resource "google_container_cluster" "primary" {
 
   }
 }
-
+/*
 # Create managed node pool
 resource "google_container_node_pool" "primary_nodes" {
   name       = google_container_cluster.primary.name
-  location   = "europe-west3-a"
+  location   = "asia-south2-a"
   cluster    = google_container_cluster.primary.name
   node_count = 3
 
@@ -76,14 +74,15 @@ resource "google_container_node_pool" "primary_nodes" {
     }
   }
 }
+*/
 
 
-# Create jump host . We will allow this jump host to access GKE cluster. the ip of this jump host is already authorized to allowin the GKE cluster
+## Create jump host . We will allow this jump host to access GKE cluster. the ip of this jump host is already authorized to allowin the GKE cluster
 
 resource "google_compute_address" "my_internal_ip_addr" {
-  project      = var.project_id
+  project      = "entur-project"
   address_type = "INTERNAL"
-  region       = "europe-west3"
+  region       = "asia-south2"
   subnetwork   = "subnet1"
   name         = "my-ip"
   address      = "10.0.0.7"
@@ -91,8 +90,8 @@ resource "google_compute_address" "my_internal_ip_addr" {
 }
 
 resource "google_compute_instance" "default" {
-  project      = var.project_id
-  zone         = "europe-west3-a"
+  project      = "entur-project"
+  zone         = "asia-south2-a"
   name         = "jump-host"
   machine_type = "e2-medium"
 
@@ -109,13 +108,47 @@ resource "google_compute_instance" "default" {
 
 }
 
+
+## Creare Firewall to access jump hist via iap
+
+
+resource "google_compute_firewall" "rules" {
+  project = "entur-project"
+  name    = "allow-ssh"
+  network = "vpc1" # Replace with a reference or self link to your network, in quotes
+
+  allow {
+    protocol = "tcp"
+    ports    = ["22"]
+  }
+  source_ranges = ["35.235.240.0/20"]
+}
+
+
+
+## Create IAP SSH permissions for your test instance
+
+resource "google_project_iam_member" "project" {
+  project = "entur-project"
+  role    = "roles/iap.tunnelResourceAccessor"
+  member  = "serviceAccount:terraform-dev@entur-project.iam.gserviceaccount.com"
+}
+
+# create cloud router for nat gateway
+resource "google_compute_router" "router" {
+  project = "entur-project"
+  name    = "nat-router"
+  network = "vpc1"
+  region  = "asia-south2"
+}
+
 ## Create Nat Gateway with module
 
 module "cloud-nat" {
   source     = "terraform-google-modules/cloud-nat/google"
   version    = "~> 1.2"
-  project_id = var.project_id
-  region     = "europe-west3"
+  project_id = "entur-project"
+  region     = "asia-south2"
   router     = google_compute_router.router.name
   name       = "nat-config"
 
@@ -132,9 +165,3 @@ output "kubernetes_cluster_name" {
   value       = google_container_cluster.primary.name
   description = "GKE Cluster Name"
 }
-
-
-
-
-
-
