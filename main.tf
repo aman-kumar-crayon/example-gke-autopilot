@@ -24,7 +24,7 @@ resource "google_compute_subnetwork" "subnet" {
 # Create GKE cluster with 2 nodes in our custom VPC/Subnet
 resource "google_container_cluster" "primary" {
   name                     = "my-gke-cluster"
-  location                 = "europe-west3"
+  location                 = "europe-west3-a"
   #enable_autopilot = true
   network                  = google_compute_network.vpc.name
   subnetwork               = google_compute_subnetwork.subnet.name
