@@ -9,7 +9,7 @@ resource "google_compute_network" "vpc" {
 # Create Subnet
 resource "google_compute_subnetwork" "subnet" {
   name          = "subnet1"
-  region        = "asia-south2"
+  region        = "europe-west3"
   network       = google_compute_network.vpc.name
   ip_cidr_range = "10.0.0.0/24"
 }
@@ -24,7 +24,7 @@ resource "google_compute_subnetwork" "subnet" {
 # Create GKE cluster with 2 nodes in our custom VPC/Subnet
 resource "google_container_cluster" "primary" {
   name                     = "my-gke-cluster"
-  location                 = "asia-south2"
+  location                 = "europe-west3"
    enable_autopilot = true
   network                  = google_compute_network.vpc.name
   subnetwork               = google_compute_subnetwork.subnet.name
@@ -53,7 +53,7 @@ resource "google_container_cluster" "primary" {
 # Create managed node pool
 resource "google_container_node_pool" "primary_nodes" {
   name       = google_container_cluster.primary.name
-  location   = "asia-south2-a"
+  location   = "europe-west3-a"
   cluster    = google_container_cluster.primary.name
   node_count = 3
 
@@ -83,7 +83,7 @@ resource "google_container_node_pool" "primary_nodes" {
 resource "google_compute_address" "my_internal_ip_addr" {
   project      = var.project_id
   address_type = "INTERNAL"
-  region       = "asia-south2"
+  region       = "europe-west3"
   subnetwork   = "subnet1"
   name         = "my-ip"
   address      = "10.0.0.7"
@@ -92,7 +92,7 @@ resource "google_compute_address" "my_internal_ip_addr" {
 
 resource "google_compute_instance" "default" {
   project      = var.project_id
-  zone         = "asia-south2-a"
+  zone         = "europe-west3-a"
   name         = "jump-host"
   machine_type = "e2-medium"
 
@@ -113,7 +113,7 @@ resource "google_compute_instance" "default" {
 resource "google_compute_address" "my_internal_ip_addr" {
   project      = var.project_id
   address_type = "INTERNAL"
-  region       = "asia-south2"
+  region       = "europe-west3"
   subnetwork   = "subnet1"
   name         = "my-ip"
   address      = "10.0.0.7"
@@ -122,7 +122,7 @@ resource "google_compute_address" "my_internal_ip_addr" {
 
 resource "google_compute_instance" "default" {
   project      = var.project_id
-  zone         = "asia-south2-a"
+  zone         = "europe-west3-a"
   name         = "jump-host"
   machine_type = "e2-medium"
 
@@ -145,7 +145,7 @@ module "cloud-nat" {
   source     = "terraform-google-modules/cloud-nat/google"
   version    = "~> 1.2"
   project_id = var.project_id
-  region     = "asia-south2"
+  region     = "europe-west3"
   router     = google_compute_router.router.name
   name       = "nat-config"
 
