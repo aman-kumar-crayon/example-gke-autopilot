@@ -79,7 +79,7 @@ resource "google_container_node_pool" "primary_nodes" {
 # Create jump host . We will allow this jump host to access GKE cluster. the ip of this jump host is already authorized to allowin the GKE cluster
 
 resource "google_compute_address" "my_internal_ip_addr" {
-  project      = "entur-project"
+  project      = var.project_id
   address_type = "INTERNAL"
   region       = "asia-south2"
   subnetwork   = "subnet1"
@@ -89,7 +89,7 @@ resource "google_compute_address" "my_internal_ip_addr" {
 }
 
 resource "google_compute_instance" "default" {
-  project      = "entur-project"
+  project      = var.project_id
   zone         = "asia-south2-a"
   name         = "jump-host"
   machine_type = "e2-medium"
@@ -109,7 +109,7 @@ resource "google_compute_instance" "default" {
 # Create jump host . We will allow this jump host to access GKE cluster. the ip of this jump host is already authorized to allowin the GKE cluster
 
 resource "google_compute_address" "my_internal_ip_addr" {
-  project      = "entur-project"
+  project      = var.project_id
   address_type = "INTERNAL"
   region       = "asia-south2"
   subnetwork   = "subnet1"
@@ -119,7 +119,7 @@ resource "google_compute_address" "my_internal_ip_addr" {
 }
 
 resource "google_compute_instance" "default" {
-  project      = "entur-project"
+  project      = var.project_id
   zone         = "asia-south2-a"
   name         = "jump-host"
   machine_type = "e2-medium"
@@ -142,7 +142,7 @@ resource "google_compute_instance" "default" {
 module "cloud-nat" {
   source     = "terraform-google-modules/cloud-nat/google"
   version    = "~> 1.2"
-  project_id = "entur-project"
+  project_id = var.project_id
   region     = "asia-south2"
   router     = google_compute_router.router.name
   name       = "nat-config"
