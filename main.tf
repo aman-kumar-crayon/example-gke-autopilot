@@ -1,3 +1,5 @@
+variable "var.project_id" {}
+
 # create VPC
 resource "google_compute_network" "vpc" {
   name                    = "vpc1"
