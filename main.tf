@@ -1,4 +1,4 @@
-variables "project_id" {}
+variable "project_id" {}
 
 # create VPC
 resource "google_compute_network" "vpc" {
