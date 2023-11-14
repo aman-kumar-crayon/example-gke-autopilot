@@ -106,36 +106,6 @@ resource "google_compute_instance" "default" {
     subnetwork = "subnet1" # Replace with a reference or self link to your subnet, in quotes
     network_ip         = google_compute_address.my_internal_ip_addr.address
   }
-}
-
-# Create jump host . We will allow this jump host to access GKE cluster. the ip of this jump host is already authorized to allowin the GKE cluster
-
-resource "google_compute_address" "my_internal_ip_addr" {
-  project      = var.project_id
-  address_type = "INTERNAL"
-  region       = "europe-west3"
-  subnetwork   = "subnet1"
-  name         = "my-ip"
-  address      = "10.0.0.7"
-  description  = "An internal IP address for my jump host"
-}
-
-resource "google_compute_instance" "default" {
-  project      = var.project_id
-  zone         = "europe-west3-a"
-  name         = "jump-host"
-  machine_type = "e2-medium"
-
-  boot_disk {
-    initialize_params {
-      image = "debian-cloud/debian-11"
-    }
-  }
-  network_interface {
-    network    = "vpc1"
-    subnetwork = "subnet1" # Replace with a reference or self link to your subnet, in quotes
-    network_ip         = google_compute_address.my_internal_ip_addr.address
-  }
 
 }
 
