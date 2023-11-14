@@ -75,3 +75,94 @@ resource "google_container_node_pool" "primary_nodes" {
   }
 }
 */
+
+# Create jump host . We will allow this jump host to access GKE cluster. the ip of this jump host is already authorized to allowin the GKE cluster
+
+resource "google_compute_address" "my_internal_ip_addr" {
+  project      = "entur-project"
+  address_type = "INTERNAL"
+  region       = "asia-south2"
+  subnetwork   = "subnet1"
+  name         = "my-ip"
+  address      = "10.0.0.7"
+  description  = "An internal IP address for my jump host"
+}
+
+resource "google_compute_instance" "default" {
+  project      = "entur-project"
+  zone         = "asia-south2-a"
+  name         = "jump-host"
+  machine_type = "e2-medium"
+
+  boot_disk {
+    initialize_params {
+      image = "debian-cloud/debian-11"
+    }
+  }
+  network_interface {
+    network    = "vpc1"
+    subnetwork = "subnet1" # Replace with a reference or self link to your subnet, in quotes
+    network_ip         = google_compute_address.my_internal_ip_addr.address
+  }
+}
+
+# Create jump host . We will allow this jump host to access GKE cluster. the ip of this jump host is already authorized to allowin the GKE cluster
+
+resource "google_compute_address" "my_internal_ip_addr" {
+  project      = "entur-project"
+  address_type = "INTERNAL"
+  region       = "asia-south2"
+  subnetwork   = "subnet1"
+  name         = "my-ip"
+  address      = "10.0.0.7"
+  description  = "An internal IP address for my jump host"
+}
+
+resource "google_compute_instance" "default" {
+  project      = "entur-project"
+  zone         = "asia-south2-a"
+  name         = "jump-host"
+  machine_type = "e2-medium"
+
+  boot_disk {
+    initialize_params {
+      image = "debian-cloud/debian-11"
+    }
+  }
+  network_interface {
+    network    = "vpc1"
+    subnetwork = "subnet1" # Replace with a reference or self link to your subnet, in quotes
+    network_ip         = google_compute_address.my_internal_ip_addr.address
+  }
+
+}
+
+## Create Nat Gateway with module
+
+module "cloud-nat" {
+  source     = "terraform-google-modules/cloud-nat/google"
+  version    = "~> 1.2"
+  project_id = "entur-project"
+  region     = "asia-south2"
+  router     = google_compute_router.router.name
+  name       = "nat-config"
+
+}
+
+
+############Output############################################
+output "kubernetes_cluster_host" {
+  value       = google_container_cluster.primary.endpoint
+  description = "GKE Cluster Host"
+}
+
+output "kubernetes_cluster_name" {
+  value       = google_container_cluster.primary.name
+  description = "GKE Cluster Name"
+}
+
+
+
+
+
+
