@@ -134,7 +134,7 @@ resource "google_compute_firewall" "rules" {
 resource "google_project_iam_member" "project" {
   project = var.project_id
   role    = "roles/iap.tunnelResourceAccessor"
-  member  = "serviceAccount:terraform-dev@entur-project.iam.gserviceaccount.com"
+  member  = "serviceAccount:${var.service_account}"
 }
 
 # create cloud router for nat gateway
