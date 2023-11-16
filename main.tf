@@ -66,7 +66,7 @@ resource "google_container_cluster" "primary" {
     }
 
   }
-depends_on = [ google_compute_subnetwork.subnet ]
+depends_on = [ google_compute_subnetwork.subnet,google_compute_router_nat.nat ]
 }
 
 # Create managed node pool
@@ -109,7 +109,7 @@ resource "google_container_cluster" "primary" {
 
   ip_allocation_policy {
   }
-depends_on = [google_compute_network.vpc,google_compute_subnetwork.subnet]
+depends_on = [ google_compute_subnetwork.subnet,google_compute_router_nat.nat ]
 }
 
 ## Create jump host . We will allow this jump host to access GKE cluster. the ip of this jump host is already authorized to allowin the GKE cluster
@@ -146,7 +146,7 @@ resource "google_compute_instance" "proxy" {
     email  = var.service_account
     scopes = ["https://www.googleapis.com/auth/cloud-platform"]
   }
-depends_on = [google_compute_subnetwork.subnet]
+depends_on = [ google_compute_subnetwork.subnet,google_compute_router_nat.nat ]
 }
 
 
@@ -163,7 +163,7 @@ resource "google_compute_firewall" "rules" {
     ports    = ["22"]
   }
   source_ranges = ["35.235.240.0/20"]
-depends_on = [google_compute_subnetwork.subnet]
+depends_on = [ google_compute_subnetwork.subnet,google_compute_router_nat.nat ]
 }
 
 
