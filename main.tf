@@ -125,7 +125,7 @@ cidr_blocks {
 
 cidr_block = "10.0.0.7/32"
 }
-gcp_public_cidrs_access_enabled = false
+
 
 }
 
