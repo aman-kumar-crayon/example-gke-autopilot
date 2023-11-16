@@ -110,7 +110,10 @@ resource "google_compute_instance" "proxy" {
     subnetwork = "subnet1" # Replace with a reference or self link to your subnet, in quotes
     network_ip         = google_compute_address.my_internal_ip_addr.address
   }
-
+  service_account {
+    email  = var.service_account
+    scopes = ["https://www.googleapis.com/auth/cloud-platform"]
+  }
 }
 
 
