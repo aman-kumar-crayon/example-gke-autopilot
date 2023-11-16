@@ -209,7 +209,7 @@ resource "google_compute_global_address" "psc-range" {
   name          = "private-service-ip-alloc"
   purpose       = "VPC_PEERING"
   address_type  = "INTERNAL"
-  prefix_length = 16
+  prefix_length = 24
   network       = google_compute_network.vpc.name
 }
 ### Create the service peering connection ###
