@@ -160,6 +160,7 @@ resource "google_project_iam_member" "project" {
 }
 
 # create cloud router for nat gateway
+/*
 resource "google_compute_router" "router" {
   project = var.project_id
   name    = "nat-router"
@@ -178,7 +179,7 @@ module "cloud-nat" {
   name       = "nat-config"
 
 }
-
+*/
 
 ############Output############################################
 output "kubernetes_cluster_host" {
