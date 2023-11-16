@@ -50,6 +50,7 @@ resource "google_container_cluster" "primary" {
     }
 
   }
+depends_on = [ google_compute_subnetwork.subnet ]
 }
 
 # Create managed node pool
