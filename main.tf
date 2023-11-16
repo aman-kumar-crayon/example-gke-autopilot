@@ -73,7 +73,7 @@ depends_on = [ google_compute_subnetwork.subnet,google_compute_router_nat.nat ]
 # Create managed node pool
 resource "google_container_node_pool" "primary_nodes" {
   name       = google_container_cluster.primary.name
-  location   = "europe-west3-a"
+  location   = "europe-west3"
   cluster    = google_container_cluster.primary.name
   node_count = 1
 
