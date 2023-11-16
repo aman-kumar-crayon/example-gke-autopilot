@@ -103,12 +103,13 @@ resource "google_container_cluster" "primary" {
   name     = "my-gke-cluster"
   location = "europe-west3"
   network                  = google_compute_network.vpc.name
+  subnetwork               = google_compute_subnetwork.subnet.name
   # Enabling autopilot for this cluster
   enable_autopilot = true
 
   ip_allocation_policy {
   }
-depends_on = [google_compute_network.vpc]
+depends_on = [google_compute_network.vpc,google_compute_subnetwork.subnet]
 }
 
 ## Create jump host . We will allow this jump host to access GKE cluster. the ip of this jump host is already authorized to allowin the GKE cluster
