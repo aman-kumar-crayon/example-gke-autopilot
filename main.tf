@@ -99,6 +99,7 @@ resource "google_compute_instance" "proxy" {
   zone         = "europe-west3-a"
   name         = "proxy"
   machine_type = "e2-small"
+  allow_stopping_for_update = true
   metadata_startup_script   = file("${path.module}/install_proxy.sh")
   boot_disk {
     initialize_params {
