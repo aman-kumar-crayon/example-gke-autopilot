@@ -38,7 +38,7 @@ depends_on = [google_compute_router.router]
 #   display_name = "Service Account for GKE nodes"
 # }
 
-
+/*
 # Create GKE cluster with 2 nodes in our custom VPC/Subnet
 resource "google_container_cluster" "primary" {
   name                     = "my-gke-cluster"
@@ -95,8 +95,20 @@ resource "google_container_node_pool" "primary_nodes" {
     }
   }
 }
+*/
 
 
+resource "google_container_cluster" "my_cluster" {
+
+  name     = "my-gke-cluster"
+  location = "europe-west3"
+
+  # Enabling autopilot for this cluster
+  enable_autopilot = true
+
+  ip_allocation_policy {
+  }
+}
 
 ## Create jump host . We will allow this jump host to access GKE cluster. the ip of this jump host is already authorized to allowin the GKE cluster
 
