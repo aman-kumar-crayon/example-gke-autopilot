@@ -8,4 +8,4 @@ steps:
   - 'https_proxy=proxy.example.internal:3128'
 options:
   workerPool:
-    'projects/my-project/locations/europe-west3/workerPools/my-pool'
+    'projects/entur-project/locations/europe-west3/workerPools/my-pool'
