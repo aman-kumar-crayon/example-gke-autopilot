@@ -104,6 +104,8 @@ resource "google_container_cluster" "primary" {
   location = "europe-west3"
   network                  = google_compute_network.vpc.name
   subnetwork               = google_compute_subnetwork.subnet.name
+  remove_default_node_pool = true                ## create the smallest possible default node pool and immediately delete it.
+  # networking_mode          = "VPC_NATIVE" 
   initial_node_count = 1
   # Enabling autopilot for this cluster
   enable_autopilot = true
