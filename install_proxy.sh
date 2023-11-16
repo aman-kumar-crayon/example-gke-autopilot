@@ -1,5 +1,7 @@
 # Install squid proxy
 export DEBIAN_FRONTEND=noninteractive
+apt-get -yy install kubectl 
+apt-get -yy install google-cloud-sdk-gke-gcloud-auth-plugin
 apt-get -yy update
 apt-get -yy install squid
 cat << EOF > /etc/squid/squid.conf
@@ -24,7 +26,7 @@ include /etc/squid/conf.d/*
 http_access allow localnet
 http_access deny all
 http_port 3128
-visible_hostname proxy.example.internal
+visible_hostname proxy.k8s.internal
 
 access_log none
 EOF
