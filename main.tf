@@ -68,7 +68,7 @@ resource "google_container_cluster" "primary" {
   }
 depends_on = [ google_compute_subnetwork.subnet,google_compute_router_nat.nat ]
 }
-*/
+
 
 # Create managed node pool
 resource "google_container_node_pool" "primary_nodes" {
@@ -97,7 +97,7 @@ resource "google_container_node_pool" "primary_nodes" {
   }
 }
 
-
+*/
 
 resource "google_container_cluster" "primary" {
 
