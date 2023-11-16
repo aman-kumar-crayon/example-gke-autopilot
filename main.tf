@@ -123,7 +123,7 @@ resource "google_container_cluster" "primary" {
 master_authorized_networks_config {
 cidr_blocks {
 
-cidr_blocks = "10.0.0.7/32"
+cidr_block = "10.0.0.7/32"
 }
 gcp_public_cidrs_access_enabled = false
 
