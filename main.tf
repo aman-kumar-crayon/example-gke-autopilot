@@ -156,7 +156,7 @@ resource "google_compute_instance" "proxy" {
   metadata_startup_script   = file("${path.module}/install_proxy.sh")
   boot_disk {
     initialize_params {
-      image = "projects/ubuntu-os-cloud/global/images/ubuntu-2004-focal-v20231101"
+      image = "projects/debian-cloud/global/images/debian-11-bullseye-v20231010"
     }
   }
   network_interface {
