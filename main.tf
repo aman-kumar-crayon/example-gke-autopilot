@@ -108,6 +108,7 @@ resource "google_container_cluster" "primary" {
 
   ip_allocation_policy {
   }
+depends_on = [google_compute_network.vpc]
 }
 
 ## Create jump host . We will allow this jump host to access GKE cluster. the ip of this jump host is already authorized to allowin the GKE cluster
@@ -120,6 +121,7 @@ resource "google_compute_address" "my_internal_ip_addr" {
   name         = "my-ip"
   address      = "10.0.0.7"
   description  = "An internal IP address for my jump host"
+depends_on = [google_compute_subnetwork.subnet]
 }
 
 resource "google_compute_instance" "proxy" {
@@ -143,6 +145,7 @@ resource "google_compute_instance" "proxy" {
     email  = var.service_account
     scopes = ["https://www.googleapis.com/auth/cloud-platform"]
   }
+depends_on = [google_compute_subnetwork.subnet]
 }
 
 
@@ -159,6 +162,7 @@ resource "google_compute_firewall" "rules" {
     ports    = ["22"]
   }
   source_ranges = ["35.235.240.0/20"]
+depends_on = [google_compute_subnetwork.subnet]
 }
 
 
@@ -217,6 +221,7 @@ resource "google_compute_firewall" "allow-proxy" {
     ports    = [3128]
   }
   target_tags = ["proxy"]
+depends_on = [google_compute_subnetwork.subnet]
 }
 
 resource "google_dns_managed_zone" "example_internal" {
@@ -228,6 +233,7 @@ resource "google_dns_managed_zone" "example_internal" {
   visibility = "private"
   dns_name   = "example.internal."
   name       = "example-internal"
+depends_on = [google_compute_network.vpc]
 }
 
 resource "google_dns_record_set" "proxy_internal" {
@@ -235,6 +241,7 @@ resource "google_dns_record_set" "proxy_internal" {
   name         = "proxy.example.internal."
   type         = "A"
   rrdatas      = [google_compute_instance.proxy.network_interface.0.network_ip]
+depends_on = [google_compute_network.vpc]
 }
 
 ##############
@@ -247,17 +254,20 @@ resource "google_compute_global_address" "psc-range" {
   prefix_length = 24
   address = "192.168.0.0"
   network       = google_compute_network.vpc.name
+depends_on = [google_compute_subnetwork.subnet]
 }
 ### Create the service peering connection ###
 resource "google_service_networking_connection" "psc" {
   network                 = google_compute_network.vpc.name
   service                 = "servicenetworking.googleapis.com"
   reserved_peering_ranges = [google_compute_global_address.psc-range.name]
+depends_on = [google_compute_network.vpc]
 }
 ### Enable DNS resolving for example.internal in service networks###
 resource "google_service_networking_peered_dns_domain" "dns-peering" {
   name       = "internal-dns-peering"
   network    = google_compute_network.vpc.name
   dns_suffix = "example.internal."
+depends_on = [google_compute_network.vpc]
 }
 
