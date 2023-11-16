@@ -98,7 +98,7 @@ resource "google_container_node_pool" "primary_nodes" {
 */
 
 
-resource "google_container_cluster" "my_cluster" {
+resource "google_container_cluster" "primary" {
 
   name     = "my-gke-cluster"
   location = "europe-west3"
