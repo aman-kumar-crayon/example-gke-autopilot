@@ -12,7 +12,7 @@ resource "google_compute_subnetwork" "subnet" {
   name          = "subnet1"
   region        = "europe-west3"
   network       = google_compute_network.vpc.name
-  ip_cidr_range = "10.0.0.0/24"
+  ip_cidr_range = "10.0.0.0/8"
 }
 
 # # Create Service Account
@@ -176,7 +176,7 @@ resource "google_compute_firewall" "allow-proxy" {
   description   = "Allow access to the proxy"
   network       = google_compute_network.vpc.name
   direction     = "INGRESS"
-  source_ranges = ["10.0.0.0/24"] # This could be more limited
+  source_ranges = ["10.0.0.0/8"] # This could be more limited
   allow {
     protocol = "tcp"
     ports    = [3128]
@@ -210,7 +210,7 @@ resource "google_compute_global_address" "psc-range" {
   purpose       = "VPC_PEERING"
   address_type  = "INTERNAL"
   prefix_length = 16
-  network       = <reference to your network>
+  network       = google_compute_network.vpc.name
 }
 ### Create the service peering connection ###
 resource "google_service_networking_connection" "psc" {
