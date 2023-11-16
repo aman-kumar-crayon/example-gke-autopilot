@@ -102,7 +102,7 @@ resource "google_container_cluster" "primary" {
 
   name     = "my-gke-cluster"
   location = "europe-west3"
-
+  network                  = google_compute_network.vpc.name
   # Enabling autopilot for this cluster
   enable_autopilot = true
 
