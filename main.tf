@@ -92,15 +92,15 @@ resource "google_compute_address" "my_internal_ip_addr" {
   description  = "An internal IP address for my jump host"
 }
 
-resource "google_compute_instance" "default" {
+resource "google_compute_instance" "proxy" {
   project      = var.project_id
   zone         = "europe-west3-a"
-  name         = "jump-host"
-  machine_type = "e2-medium"
-
+  name         = "proxy"
+  machine_type = "e2-small"
+  metadata_startup_script   = file("${path.module}/install_proxy.sh")
   boot_disk {
     initialize_params {
-      image = "debian-cloud/debian-11"
+      image = "projects/ubuntu-os-cloud/global/images/ubuntu-2004-focal-v20231101"
     }
   }
   network_interface {
@@ -168,3 +168,37 @@ output "kubernetes_cluster_name" {
   value       = google_container_cluster.primary.name
   description = "GKE Cluster Name"
 }
+
+
+############ proxy ############
+resource "google_compute_firewall" "allow-proxy" {
+  name          = "allow-proxy"
+  description   = "Allow access to the proxy"
+  network       = google_compute_network.vpc.name
+  direction     = "INGRESS"
+  source_ranges = ["10.0.0.0/24"] # This could be more limited
+  allow {
+    protocol = "tcp"
+    ports    = [3128]
+  }
+  target_tags = ["proxy"]
+}
+
+resource "google_dns_managed_zone" "example_internal" {
+  private_visibility_config {
+    networks {
+      network_url = google_compute_network.vpc.self_link
+    }
+  }
+  visibility = "private"
+  dns_name   = "example.internal."
+  name       = "example-internal"
+}
+
+resource "google_dns_record_set" "proxy_internal" {
+  managed_zone = google_dns_managed_zone.example_internal.name
+  name         = "proxy.example.internal."
+  type         = "A"
+  rrdatas      = [google_compute_instance.proxy.network_interface.0.network_ip]
+}
+
