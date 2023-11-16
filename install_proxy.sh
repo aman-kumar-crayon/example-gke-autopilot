@@ -26,7 +26,7 @@ include /etc/squid/conf.d/*
 http_access allow localnet
 http_access deny all
 http_port 3128
-visible_hostname proxy.k8s.internal
+visible_hostname proxy.example.internal
 
 access_log none
 EOF
