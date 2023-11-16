@@ -213,7 +213,7 @@ resource "google_compute_global_address" "psc-range" {
   address_type  = "INTERNAL"
   prefix_length = 24
   address = "192.168.0.0"
-  #network       = google_compute_network.vpc.name
+  network       = google_compute_network.vpc.name
 }
 ### Create the service peering connection ###
 resource "google_service_networking_connection" "psc" {
