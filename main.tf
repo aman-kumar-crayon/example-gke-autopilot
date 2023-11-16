@@ -113,7 +113,7 @@ resource "google_container_cluster" "primary" {
        private_cluster_config {
            enable_private_endpoint = true
            enable_private_nodes    = true
-
+           master_ipv4_cidr_block = "10.1.0.0/28"
 
            master_global_access_config {
               enabled = false 
