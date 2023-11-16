@@ -13,6 +13,7 @@ resource "google_compute_subnetwork" "subnet" {
   region        = "europe-west3"
   network       = google_compute_network.vpc.name
   ip_cidr_range = "10.0.0.0/8"
+depends_on = [google_compute_network.vpc]
 }
 
 # # Create Service Account
