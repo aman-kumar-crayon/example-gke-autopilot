@@ -104,11 +104,22 @@ resource "google_container_cluster" "primary" {
   location = "europe-west3"
   network                  = google_compute_network.vpc.name
   subnetwork               = google_compute_subnetwork.subnet.name
+  initial_node_count = 1
   # Enabling autopilot for this cluster
   enable_autopilot = true
 
   ip_allocation_policy {
   }
+       private_cluster_config {
+           enable_private_endpoint = true
+           enable_private_nodes    = true
+
+
+           master_global_access_config {
+              enabled = false 
+            }
+        }
+
 depends_on = [ google_compute_subnetwork.subnet,google_compute_router_nat.nat ]
 }
 
