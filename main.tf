@@ -202,3 +202,26 @@ resource "google_dns_record_set" "proxy_internal" {
   rrdatas      = [google_compute_instance.proxy.network_interface.0.network_ip]
 }
 
+##############
+
+### Create a private service peering address range ###
+resource "google_compute_global_address" "psc-range" {
+  name          = "private-service-ip-alloc"
+  purpose       = "VPC_PEERING"
+  address_type  = "INTERNAL"
+  prefix_length = 16
+  network       = <reference to your network>
+}
+### Create the service peering connection ###
+resource "google_service_networking_connection" "psc" {
+  network                 = google_compute_network.vpc.name
+  service                 = "servicenetworking.googleapis.com"
+  reserved_peering_ranges = [google_compute_global_address.psc-range.name]
+}
+### Enable DNS resolving for example.internal in service networks###
+resource "google_service_networking_peered_dns_domain" "dns-peering" {
+  name       = "internal-dns-peering"
+  network    = google_compute_network.vpc.name
+  dns_suffix = "example.internal."
+}
+
