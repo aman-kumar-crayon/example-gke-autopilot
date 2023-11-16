@@ -120,6 +120,12 @@ resource "google_container_cluster" "primary" {
             }
         }
 
+master_authorized_networks_config {
+cidr_blocks = "10.0.0.7/32"
+gcp_public_cidrs_access_enabled = false
+
+}
+
 depends_on = [ google_compute_subnetwork.subnet,google_compute_router_nat.nat ]
 }
 
