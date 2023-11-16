@@ -23,8 +23,9 @@ http_access deny manager
 
 include /etc/squid/conf.d/*
 
-http_access allow localnet
-http_access deny all
+http_access allow all
+#http_access allow local
+#http_access deny all
 http_port 3128
 visible_hostname proxy.example.internal
 
