@@ -110,7 +110,7 @@ resource "google_container_cluster" "primary" {
   initial_node_count = 1
   # Enabling autopilot for this cluster
   enable_autopilot = true
-
+  deletion_protection = false
   ip_allocation_policy {
   }
        private_cluster_config {
