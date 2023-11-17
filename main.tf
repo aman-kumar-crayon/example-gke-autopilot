@@ -304,7 +304,7 @@ resource "google_cloudbuild_worker_pool" "pool" {
     no_external_ip = true
   }
   network_config {
-    peered_network = google_compute_network.vpc.self_link
+    peered_network = google_compute_network.vpc.id
 }
 depends_on              = [google_service_networking_peered_dns_domain.dns-peering]
 }
