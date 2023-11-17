@@ -295,3 +295,13 @@ resource "google_service_networking_peered_dns_domain" "dns-peering" {
 depends_on = [google_compute_network.vpc]
 }
 
+resource "google_cloudbuild_worker_pool" "pool" {
+  name = "mypool"
+  location = "europe-west3"
+  worker_config {
+    disk_size_gb = 100
+    machine_type = "e2-standard-2"
+    no_external_ip = true
+  }
+depends_on              = [google_service_networking_peered_dns_domain.dns-peering]
+}
