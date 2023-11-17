@@ -303,5 +303,8 @@ resource "google_cloudbuild_worker_pool" "pool" {
     machine_type = "e2-standard-2"
     no_external_ip = true
   }
+  network_config {
+    peered_network = google_compute_network.vpc.name
+}
 depends_on              = [google_service_networking_peered_dns_domain.dns-peering]
 }
